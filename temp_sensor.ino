@@ -6,8 +6,9 @@
 
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "Jah's iphone";
+const char *password = "Jahas12345";
+const char *host = "JAH";
 
 double temp_amb;
 double temp_obj;
@@ -41,21 +42,54 @@ void sendSensorData(){
   WiFiClient client;
   String postData; 
   String sensorData = (String)temp_obj;
-  String url = "http://127.0.0.1/esp8266/postData.php";
+  String url = "http://192.168.43.24/esp8266/postData.php";
   
 
   postData = "Temperature = "+ sensorData;
 
-  http.begin(client, url);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+//  http.begin(client, url);
+//  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+//
+// // int httpCode = http.POST(url, "Content-Type: application/json\r\n", "{ 'sensorData' : "'"$sensorData"'" }");
+//  int httpCode = http.POST(sensorData);
+//  String payload = http.getString();
+//  Serial.print("httpCode: ");
+//  Serial.println(httpCode);
+//  Serial.println(sensorData);
+//  //Serial.print("Payload: " +postData);
+//  Serial.println(payload);
+//
+//  http.end();
 
-  int httpCode = http.POST(postData);
-  String payload = http.getString();
-  Serial.print("httpCode");
-  Serial.println(httpCode);
-  Serial.println(payload);
+    const int httpPort = 80;
+    if (!client.connect(host, httpPort)) {
+        Serial.println("connection failed");
+        return;
+    }
 
-  http.end();
+    client.print(String("GET http://JAH/esp8266/postData.php?") + 
+                          ("&temperature=") + temp_obj +
+                          " HTTP/1.1\r\n" +
+                 "Host: " + host + "\r\n" +
+                 "Connection: close\r\n\r\n");
+
+
+  unsigned long timeout = millis();
+    while (client.available() == 0) {
+        if (millis() - timeout > 1000) {
+            Serial.println(">>> Client Timeout !");
+            client.stop();
+            return;
+        }
+    }
+
+     while(client.available()) {
+        String line = client.readStringUntil('\r');
+        Serial.print(line);
+        
+    }
+
+  
 
   delay(5000);
 }
@@ -92,5 +126,7 @@ void loop() {
   Serial.println(temp_obj);
 //  delay(2500);
 
+if(WiFi.status()== WL_CONNECTED){
   sendSensorData();
+}
 }
