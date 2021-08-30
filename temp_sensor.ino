@@ -13,6 +13,7 @@ const char *host = "JAH";
 double temp_amb;
 double temp_obj;
 int led = 2;
+char measure;
 
 void connectWifi(){
   delay(1000);
@@ -91,7 +92,7 @@ void sendSensorData(){
 
   
 
-  delay(5000);
+  delay(10000);
 }
 
 void setup() {
@@ -110,7 +111,20 @@ void setup() {
 
 void loop() {
   temp_amb = mlx.readAmbientTempC();
-  temp_obj = mlx.readObjectTempC();
+   temp_obj = mlx.readObjectTempC();
+//  Serial.println("Enter 1 to measure temperature. ");
+//  if (Serial.available() > 0) {    
+//    measure = Serial.read();       
+//  
+//    if ((measure >= '0') && (measure <= '9')) {
+//      Serial.print("Measuring... : ");
+//       temp_obj = mlx.readObjectTempC();
+//    }
+//    else {
+//      Serial.println("Not a number.");
+//    }
+//  }
+ 
   
   Serial.print("Room Temp = ");
   Serial.println(temp_amb);
