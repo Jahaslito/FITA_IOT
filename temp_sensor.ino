@@ -6,9 +6,9 @@
 
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
-const char *ssid = "Jah's iphone";
-const char *password = "Jahas12345";
-const char *host = "JAH";
+const char *ssid = "";
+const char *password = "";
+const char *host = "";
 
 double temp_amb;
 double temp_obj;
@@ -43,7 +43,7 @@ void sendSensorData(){
   WiFiClient client;
   String postData; 
   String sensorData = (String)temp_obj;
-  String url = "http://192.168.43.24/esp8266/postData.php";
+  String url = "http://ip address/esp8266/postData.php";
   
 
   postData = "Temperature = "+ sensorData;
@@ -68,10 +68,10 @@ void sendSensorData(){
         return;
     }
 
-    client.print(String("GET http://JAH/esp8266/postData.php?") + 
+    client.print(String("GET http://host/esp8266/postData.php?") + 
                           ("&temperature=") + temp_obj +
                           " HTTP/1.1\r\n" +
-                 "Host: " + host + "\r\n" +
+                 "Host: " + host + "\r\n" +S
                  "Connection: close\r\n\r\n");
 
 
